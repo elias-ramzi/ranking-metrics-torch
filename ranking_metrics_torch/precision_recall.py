@@ -7,7 +7,8 @@ from ranking_metrics_torch.common import _mask_with_nans
 
 
 def precision_at(
-    ks: torch.Tensor, scores: torch.Tensor, labels: torch.Tensor
+    ks: torch.Tensor, scores: torch.Tensor, labels: torch.Tensor,
+    embeddings_come_from_same_source: bool = False,
 ) -> torch.Tensor:
     """Compute precision@K for each of the provided cutoffs
 
@@ -23,7 +24,7 @@ def precision_at(
     """
 
     ks, scores, labels = _check_inputs(ks, scores, labels)
-    _, _, topk_labels = _extract_topk(ks, scores, labels)
+    _, _, topk_labels = _extract_topk(ks, scores, labels, embeddings_come_from_same_source=embeddings_come_from_same_source)
     precisions = _create_output_placeholder(scores, ks)
 
     for column, k in enumerate(ks):
@@ -33,7 +34,8 @@ def precision_at(
 
 
 def recall_at(
-    ks: torch.Tensor, scores: torch.Tensor, labels: torch.Tensor
+    ks: torch.Tensor, scores: torch.Tensor, labels: torch.Tensor,
+    embeddings_come_from_same_source: bool = False,
 ) -> torch.Tensor:
     """Compute recall@K for each of the provided cutoffs
 
@@ -47,7 +49,7 @@ def recall_at(
     """
 
     ks, scores, labels = _check_inputs(ks, scores, labels)
-    _, _, topk_labels = _extract_topk(ks, scores, labels)
+    _, _, topk_labels = _extract_topk(ks, scores, labels, embeddings_come_from_same_source=embeddings_come_from_same_source)
     recalls = _create_output_placeholder(scores, ks)
 
     # Compute recalls at K

@@ -43,9 +43,14 @@ def _check_inputs(ks, scores, labels):
     )
 
 
-def _extract_topk(ks, scores, labels):
-    max_k = int(max(ks))
+def _extract_topk(ks, scores, labels, embeddings_come_from_same_source=False):
+    max_k = int(max(ks)) + embeddings_come_from_same_source
     topk_scores, topk_indices = torch.topk(scores, max_k)
+
+    if embeddings_come_from_same_source:
+        topk_scores = topk_scores[:, 1:]
+        topk_indices = topk_indices[:, 1:]
+
     topk_labels = torch.gather(labels, 1, topk_indices)
     return topk_scores, topk_indices, topk_labels
 

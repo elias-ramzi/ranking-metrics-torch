@@ -7,7 +7,8 @@ from ranking_metrics_torch.common import _mask_with_nans
 
 
 def dcg_at(
-    ks: torch.Tensor, scores: torch.Tensor, labels: torch.Tensor, log_base: int = 2
+    ks: torch.Tensor, scores: torch.Tensor, labels: torch.Tensor, log_base: int = 2,
+    embeddings_come_from_same_source: bool = False,
 ) -> torch.Tensor:
     """Compute discounted cumulative gain at K for provided cutoffs (ignoring ties)
 
@@ -20,7 +21,8 @@ def dcg_at(
         torch.Tensor: list of discounted cumulative gains at cutoffs
     """
     ks, scores, labels = _check_inputs(ks, scores, labels)
-    topk_scores, topk_indices, topk_labels = _extract_topk(ks, scores, labels)
+    topk_scores, topk_indices, topk_labels = _extract_topk(
+        ks, scores, labels, embeddings_come_from_same_source=embeddings_come_from_same_source)
     dcgs = _create_output_placeholder(scores, ks)
 
     # Compute discounts
@@ -44,7 +46,8 @@ def dcg_at(
 
 
 def ndcg_at(
-    ks: torch.Tensor, scores: torch.Tensor, labels: torch.Tensor, log_base: int = 2
+    ks: torch.Tensor, scores: torch.Tensor, labels: torch.Tensor, log_base: int = 2,
+    embeddings_come_from_same_source: bool = False,
 ) -> torch.Tensor:
     """Compute normalized discounted cumulative gain at K for provided cutoffs (ignoring ties)
 
@@ -57,7 +60,8 @@ def ndcg_at(
         torch.Tensor: list of discounted cumulative gains at cutoffs
     """
     ks, scores, labels = _check_inputs(ks, scores, labels)
-    topk_scores, topk_indices, topk_labels = _extract_topk(ks, scores, labels)
+    topk_scores, topk_indices, topk_labels = _extract_topk(
+        ks, scores, labels, embeddings_come_from_same_source=embeddings_come_from_same_source)
     ndcgs = _create_output_placeholder(scores, ks)
 
     # Compute discounted cumulative gains
